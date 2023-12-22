@@ -1,7 +1,11 @@
+import "./app.css";
+import { AppRouter } from "./router/AppRouter";
+import { AppTheme } from "./theme/AppTheme";
+
 export const App = () => {
     return (
-    <>
-        <h1>React Journal App</h1>
-    </>
+    <AppTheme>
+        <AppRouter/>
+    </AppTheme>
     )
 }
