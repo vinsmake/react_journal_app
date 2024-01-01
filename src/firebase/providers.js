@@ -3,6 +3,7 @@ import { FirebaseAuth } from "./config";
 
 const googleProvider = new GoogleAuthProvider();
 
+
 /* Start google sign in */
 export const signInWithGoogle = async() => {
     
