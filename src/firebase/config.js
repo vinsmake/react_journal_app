@@ -13,8 +13,7 @@ const firebaseConfig = {
   projectId: "react-cursos-431e7",
   storageBucket: "react-cursos-431e7.appspot.com",
   messagingSenderId: "425460731319",
-  appId: "1:425460731319:web:79d41fad4345a2599dac32",
-  measurementId: "G-V6GMXZCBPD"
+  appId: "1:425460731319:web:79d41fad4345a2599dac32"
 };
 
 // Initialize Firebase

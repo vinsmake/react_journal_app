@@ -13,6 +13,10 @@ export const checkingAuthentication = (email, password) => {
 export const startGoogleSignIn = () => {
     return async (dispatch) => {
         dispatch(checkingCredentials());
-        const result = signInWithGoogle();
+
+        /* we get the user data from the function in the provider */
+        const result = await signInWithGoogle();
+        console.log({result})
+
     }
 }
