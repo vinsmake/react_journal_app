@@ -12,8 +12,7 @@ export const LoginPage = () => {
     /* we get this to block the buttons when we're loging with google popup */
     const {status} = useSelector(state => state.auth)
     /* If status is checking, then TRUE, if false, obtain new valor */
-    const isAuthenticating = useMemo(() => status === 'checking', [status])
-
+    const isAuthenticating = useMemo( () => status === 'checking', [status]);
     const dispatch = useDispatch()
 
     const { email, password, onInputChange } = useForm({
@@ -49,8 +48,8 @@ export const LoginPage = () => {
                         type="password"
                         placeholder="mypassword123"
                         fullWidth
-                        name="email"
-                        value={email}
+                        name="password"
+                        value={password}
                         onChange={onInputChange}
                     ></TextField>
                 </Grid>
