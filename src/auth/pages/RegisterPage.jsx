@@ -15,8 +15,9 @@ export const RegisterPage = () => {
     const {displayName, email, password, onInputChange, formState } = useForm(formData)
 
 
-    /* maybe this could need event.preventDefault(); */
-    const onSubmit = () => {
+    
+    const onSubmit = (event) => {
+        event.preventDefault();
         console.log(formState)
     }
 
