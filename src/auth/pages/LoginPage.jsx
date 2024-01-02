@@ -10,15 +10,17 @@ import { useMemo } from "react"
 export const LoginPage = () => {
 
     /* we get this to block the buttons when we're loging with google popup */
-    const {status} = useSelector(state => state.auth)
+    const {status, errorMessage} = useSelector(state => state.auth)
     /* If status is checking, then TRUE, if false, obtain new valor */
-    const isAuthenticating = useMemo( () => status === 'checking', [status]);
-    const dispatch = useDispatch()
 
+    
+    const dispatch = useDispatch()
     const { email, password, onInputChange } = useForm({
-        email: 'vinsmakedev@gmail.com',
-        password: 'mypassword123'
+        email: '',
+        password: ''
     })
+
+    const isAuthenticating = useMemo( () => status === 'checking', [status]);
 
     const onSubmit = (e) => {
         e.preventDefault();
