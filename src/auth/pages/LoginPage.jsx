@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { Google } from "@mui/icons-material"
 import { Button, Grid, Link, TextField, Typography } from "@mui/material"
 import { Link as routerLink } from 'react-router-dom'
@@ -5,20 +6,22 @@ import { AuthLayout } from "../layout/AuthLayout"
 import { useForm } from "../../hooks/useForm"
 import { useDispatch, useSelector } from "react-redux"
 import { checkingAuthentication, startGoogleSignIn } from "../../store/auth/thunks"
-import { useMemo } from "react"
+
 
 export const LoginPage = () => {
 
     /* we get this to block the buttons when we're loging with google popup */
-    const {status} = useSelector(state => state.auth)
+    const {status, errorMessage} = useSelector(state => state.auth)
     /* If status is checking, then TRUE, if false, obtain new valor */
-    const isAuthenticating = useMemo( () => status === 'checking', [status]);
-    const dispatch = useDispatch()
 
+    
+    const dispatch = useDispatch()
     const { email, password, onInputChange } = useForm({
-        email: 'vinsmakedev@gmail.com',
-        password: 'mypassword123'
+        email: '',
+        password: ''
     })
+
+    const isAuthenticating = useMemo( () => status === 'checking', [status]);
 
     const onSubmit = (e) => {
         e.preventDefault();
