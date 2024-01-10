@@ -1,9 +1,14 @@
 import { TurnedInNot } from "@mui/icons-material"
 import { Box, Divider, Drawer, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material"
+import { useSelector } from "react-redux"
 
 export const JournalSideBar = ({ drawerWidth = 240 }) => {
+
+    const {displayName} = useSelector(state => state.auth)
+
     return (
-        <Box
+        <Box 
+        className='animate__animated animate__fadeInLeftBig'
             component='nav'
             sx={{
                 width: { sm: drawerWidth }, flexShrink: { sm: 0 }
@@ -20,7 +25,7 @@ export const JournalSideBar = ({ drawerWidth = 240 }) => {
             >
                 <Toolbar>
                     <Typography variant='h6' noWrap component='div'>
-                        Vinsmake
+                        {displayName}
                     </Typography>
                 </Toolbar>
                 <Divider />

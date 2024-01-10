@@ -1,9 +1,20 @@
 import { LogoutOutlined, MenuOutlined } from "@mui/icons-material"
 import { AppBar, Grid, IconButton, Toolbar, Typography } from "@mui/material"
+import { useDispatch } from "react-redux"
+import { startLogout } from "../../store/auth/thunks";
 
 export const JournalNavBar = ({drawerWidth = 240}) => {
+
+
+    const dispatch = useDispatch();
+
+    const onLogut = () => {
+        dispatch(startLogout());
+    }
+
     return (
         <AppBar
+        className='animate__animated animate__fadeInDown animate__faster'
         position="fixed"
         sx={{
             width: {sm: `calc(100% - ${drawerWidth}px)`},
@@ -24,7 +35,7 @@ export const JournalNavBar = ({drawerWidth = 240}) => {
                     <Typography variant="H6" noWrap component='div'>Journal App</Typography>
                 </Grid>
 
-                <IconButton color="error">
+                <IconButton onClick={onLogut} color="error">
                     <LogoutOutlined/>
                 </IconButton>
 
