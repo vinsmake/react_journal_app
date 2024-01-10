@@ -9,6 +9,8 @@ export const useForm = ( initialForm = {}, formValidations = {}) => {
         createValidators();
     }, [ formState ])
     
+
+    /* memorizamos el valor, solo deberia volverse a procesar cuando cambia el formValidation */
     const isFormValid = useMemo( () => {
 
         for (const formValue of Object.keys( formValidation )) {
