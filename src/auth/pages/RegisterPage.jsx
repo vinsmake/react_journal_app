@@ -1,109 +1,131 @@
-import { Button, Grid, Link, TextField, Typography } from "@mui/material"
-import { Link as routerLink } from 'react-router-dom'
-import { AuthLayout } from "../layout/AuthLayout"
-import { useForm } from "../../hooks/useForm"
-import { useState } from "react"
+import { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
+import { Alert, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import { AuthLayout } from '../layout/AuthLayout';
 
-/* So the form knows what data do we need, not necesarily this way */
+
+import { useForm } from '../../hooks/useForm';
+import { startCreatingUserWithEmailPassword } from '../../store/auth/thunks';
+
+
 const formData = {
-    email: '',
-    password: '',
-    displayName: ''
+  email: '',
+  password: '',
+  displayName: ''
 }
 
-/* the validations we're gonna do */
 const formValidations = {
-    email: [(value) => value.includes('@'), 'Email must be real'],
-    password: [(value) => value.length >= 6, 'Passwor must be 6 letters or long'],
-    displayName: [(value) => value.length >= 1, 'Name is required']
+  email: [ (value) => value.includes('@'), 'El correo debe de tener una @'],
+  password: [ (value) => value.length >= 6, 'El password debe de tener más de 6 letras.'],
+  displayName: [ (value) => value.length >= 1, 'El nombre es obligatorio.'],
 }
 
 export const RegisterPage = () => {
-    
-    
-    const [formSubmited, setFormSubmited ] = useState(false);
 
-    const {
-        displayName,
-        email,
-        password,
-        onInputChange,
-        formState,
-        isFormValid,
-        displayNameValid,
-        passwordValid,
-        emailValid
-        } = useForm(formData, formValidations);
+  const dispatch = useDispatch();
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
+  /* this disables buttos if is being aithenticated */
+  const { status, errorMessage } = useSelector( state => state.auth );
+  const isCheckingAuthentication = useMemo( () => status === 'checking', [status]);
+
+  const { 
+    formState, displayName, email, password, onInputChange,
+    isFormValid, displayNameValid, emailValid, passwordValid, 
+  } = useForm( formData, formValidations );
+
+  const onSubmit = ( event ) => {
+    event.preventDefault();
+    setFormSubmitted(true);
+
+    if ( !isFormValid ) return;
+
+    dispatch( startCreatingUserWithEmailPassword(formState) );
+  }
+
+  return (
+    <AuthLayout title="Crear cuenta">
+
+      <form onSubmit={ onSubmit } className='animate__animated animate__fadeIn animate__faster'>
+          <Grid container>
+           
+            <Grid item xs={ 12 } sx={{ mt: 2 }}>
+              <TextField 
+                label="Nombre completo" 
+                type="text" 
+                placeholder='Nombre completo' 
+                fullWidth
+                name="displayName"
+                value={ displayName }
+                onChange={ onInputChange }
+                error={ !!displayNameValid && formSubmitted }
+                helperText={ displayNameValid }
+              />
+            </Grid>
+
+            <Grid item xs={ 12 } sx={{ mt: 2 }}>
+              <TextField 
+                label="Correo" 
+                type="email" 
+                placeholder='correo@google.com' 
+                fullWidth
+                name="email"
+                value={ email }
+                onChange={ onInputChange }
+                error={ !!emailValid && formSubmitted }
+                helperText={ emailValid }
+              />
+            </Grid>
+
+            <Grid item xs={ 12 } sx={{ mt: 2 }}>
+              <TextField 
+                label="Contraseña" 
+                type="password" 
+                placeholder='Contraseña' 
+                fullWidth
+                name="password"
+                value={ password }
+                onChange={ onInputChange }
+                error={ !!passwordValid && formSubmitted  }
+                helperText={ passwordValid }
+              />
+            </Grid>
+            
+            <Grid container spacing={ 2 } sx={{ mb: 2, mt: 1 }}>
+              
+              <Grid 
+                item 
+                xs={ 12 }
+                display={ !!errorMessage ? '': 'none' }
+              >
+                <Alert severity='error'>{ errorMessage }</Alert>
+              </Grid>
+
+              <Grid item xs={ 12 }>
+                <Button 
+                  disabled={ isCheckingAuthentication }
+                  type="submit"
+                  variant='contained' 
+                  fullWidth>
+                  Crear cuenta
+                </Button>
+              </Grid>
+            </Grid>
 
 
-        console.log(displayNameValid);
+            <Grid container direction='row' justifyContent='end'>
+              <Typography sx={{ mr: 1 }}>¿Ya tienes cuenta?</Typography>
+              <Link component={ RouterLink } color='inherit' to="/auth/login">
+                ingresar
+              </Link>
+            </Grid>
+
+          </Grid>
 
 
-    const onSubmit = (event) => {
-        event.preventDefault();
-        setFormSubmited(true);
-        console.log(formState);
-    }
+        </form>
 
-
-    return (
-        <AuthLayout title='Sign up'>
-            <form onSubmit={onSubmit}>
-                <Grid item xs={12} sx={{ mt: 2 }}>
-                    <TextField label='Full name'
-                        type="text"
-                        placeholder="Jonh Snow"
-                        fullWidth
-                        name="displayName"
-                        value={displayName}
-                        onChange={onInputChange}
-                        error={!!displayNameValid && formSubmited}
-                        helperText={displayNameValid}
-
-                    ></TextField>
-                </Grid>
-                <Grid item xs={12} sx={{ mt: 2 }}>
-                    <TextField label='email'
-                        type="email"
-                        placeholder="jonhsnow@winterfell.com"
-                        fullWidth
-                        name="email"
-                        value={email}
-                        onChange={onInputChange}
-                        error={!!emailValid && formSubmited}
-                        helperText={emailValid}
-                    ></TextField>
-                </Grid>
-
-                <Grid item xs={12} sx={{ mt: 2 }}>
-                    <TextField label='Password'
-                        type="password"
-                        placeholder="daenerys123"
-                        fullWidth
-                        name="password"
-                        value={password}
-                        onChange={onInputChange}
-                        error={!!passwordValid && formSubmited}
-                        helperText={passwordValid}
-                    ></TextField>
-                </Grid>
-
-                <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
-                    <Grid item xs={12}>
-                        <Button type="submit" variant={'contained'} fullWidth>
-                            Sign up
-                        </Button>
-                    </Grid>
-                </Grid>
-
-                <Grid container direction={'row'} justifyContent={'end'}>
-                    <Link component={routerLink} color={'inherit'} to='/auth/login'>
-                        <Typography>already have an account?</Typography>
-                    </Link>
-                </Grid>
-
-            </form>
-        </AuthLayout>
-
-    )
+    </AuthLayout>
+  )
 }
