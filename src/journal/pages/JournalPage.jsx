@@ -4,12 +4,13 @@ import { JournalLayout } from "../layout/JournalLayout"
 import { NothingSelectedView } from "../view/NothingSelectedView"
 import { NoteView } from "../view/NoteView"
 import { AddOutlined } from "@mui/icons-material"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { startNewNote } from "../../store/journal/thunks"
 
 export const JournalPage = () => {
 
   const dispatch = useDispatch();
+  const {isSaving, active} = useSelector(state => state.journal);
 
   const onClickNewNote = () => {
     dispatch(startNewNote());
@@ -17,14 +18,18 @@ export const JournalPage = () => {
 
     return (
     <JournalLayout >
-{/*         <Typography variant="h1">JournalPage </Typography>
-        <Typography>Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit quaerat expedita libero temporibus molestias doloribus, repudiandae laudantium iure inventore ratione? Labore dicta voluptas illum modi molestiae, molestias quia soluta odit.</Typography>
- */}
-    <NothingSelectedView/>
-    {/* <NoteView/> */}
+
+      {/* here we are transforming active to a boolean, and we are creating an if statement */}
+    {
+      (!!active)
+      ?<NoteView/>
+      :<NothingSelectedView/>
+    }
+
 
     <IconButton
         onClick={onClickNewNote}
+        disabled={isSaving}
         size='large'
         sx={{
           color: 'white',

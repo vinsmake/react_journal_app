@@ -4,7 +4,7 @@ export const JournalSlice = createSlice({
     name: 'journal',
     initialState: {
         /* this is a boolean to know if we're saving */
-        isSaving: true,
+        isSaving: false,
         messageSaved: '',
         /* an object where our notes are gonna be saved */
         notes: [],
@@ -18,12 +18,21 @@ export const JournalSlice = createSlice({
         //        }
     },
     reducers: {
+        /* we use this to change the state, so the user won't create more than 1 note at time */
+        savingNewNote: (state)=> {
+            state.isSaving = true;
+        },
         /*(C) Reducer to create a new note */
         addNewEmptyNote: (state, action) => {
+            /* the payload es our new note */
+            state.notes.push(action.payload);
 
+            state.isSaving = false;
         },
         /*(R) Reducer to click and see active note */
         setActiveNote: (state, action) => {
+            /* out payload is a note */
+            state.active = action.payload;
 
         },
         /*(R) To charge and read the notes */
@@ -52,4 +61,5 @@ export const {
     setSaving,
     updateNote,
     deleteNoteById,
+    savingNewNote
 } = JournalSlice.actions
