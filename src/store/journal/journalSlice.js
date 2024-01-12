@@ -37,7 +37,7 @@ export const JournalSlice = createSlice({
         },
         /*(R) To charge and read the notes */
         setNotes: (state, action) => {
-
+            state.notes = action.payload
         },
         /*(U) to save notes */
         setSaving: (state) => {

@@ -1,5 +1,5 @@
 
-import { IconButton, Typography } from "@mui/material"
+import { IconButton } from "@mui/material"
 import { JournalLayout } from "../layout/JournalLayout"
 import { NothingSelectedView } from "../view/NothingSelectedView"
 import { NoteView } from "../view/NoteView"
