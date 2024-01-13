@@ -31,7 +31,7 @@ export const JournalSlice = createSlice({
         },
         /*(R) Reducer to click and see active note */
         setActiveNote: (state, action) => {
-            /* out payload is a note */
+            /* out payload is a note, we change our active data to our selected note's data */
             state.active = action.payload;
 
         },
