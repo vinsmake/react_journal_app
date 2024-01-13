@@ -1,10 +1,12 @@
 import { TurnedInNot } from "@mui/icons-material"
 import { Box, Divider, Drawer, Grid, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Typography } from "@mui/material"
 import { useSelector } from "react-redux"
+import { SideBarItem } from "./SideBarItem"
 
 export const JournalSideBar = ({ drawerWidth = 240 }) => {
 
     const {displayName} = useSelector(state => state.auth)
+    const {notes} = useSelector(state => state.journal)
 
     return (
         <Box 
@@ -31,19 +33,10 @@ export const JournalSideBar = ({ drawerWidth = 240 }) => {
                 <Divider />
 
                 <List>
+                    {/* Here we create every sidebar note view, the key is bein used inside the component */}
                     {
-                        ['Enero', 'Febrero', 'Marzo', 'Abril'].map(text => (
-                            <ListItem key={text} disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        <TurnedInNot />
-                                    </ListItemIcon>
-                                    <Grid container>
-                                        <ListItemText primary={text} />
-                                        <ListItemText secondary={'Exercitation cillum irure elit consectetur.'} />
-                                    </Grid>
-                                </ListItemButton>
-                            </ListItem>
+                        notes.map(note => (
+                            <SideBarItem key={note.id} note={note}/>
                         ))
                     }
                 </List>

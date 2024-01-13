@@ -8,6 +8,12 @@ export const useForm = ( initialForm = {}, formValidations = {}) => {
     useEffect(() => {
         createValidators();
     }, [ formState ])
+
+    useEffect(() => {
+        /* if initial form changes, we set it again */
+        setFormState(initialForm)
+    }, [initialForm])
+    
     
 
     /* memorizamos el valor, solo deberia volverse a procesar cuando cambia el formValidation */
