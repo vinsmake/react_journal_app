@@ -41,11 +41,20 @@ export const JournalSlice = createSlice({
         },
         /*(U) to save notes */
         setSaving: (state) => {
+            state.isSaving = true;
 
         },
         /*(U) To ubdate note */
+        /* the payload is and updated note */
         updateNote: (state, action) => {
-
+            state.isSaving = false;
+            /* iteramos la lista de notas, y si alguna tiene la misma id, la actuliza, de lo contrario, la develve como la leyo, sin cambio */
+            state.notes = state.notes.map(note => {
+                if (note.id === action.payload.id) {
+                    return action.payload
+                }
+                return note;
+            })
         },
         /* (D) To delete notes */
         deleteNoteById: (state, action) => {
