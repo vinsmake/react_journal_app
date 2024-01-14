@@ -1,6 +1,6 @@
 import { collection, doc, setDoc } from "firebase/firestore/lite";
 import { FirebaseDB } from "../../firebase/config";
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes } from "./journalSlice";
+import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote } from "./journalSlice";
 import { loadNotes } from "./loadNotes";
 
 
@@ -45,5 +45,34 @@ export const startLoadingNotes = () => {
         /* and we set those notes */
         dispatch(setNotes(notes))
 
+    }
+}
+
+export const startSaveNote = () => {
+    return async(dispatch, getState) => {
+
+        /* to mark the start of the acction and change the state */
+        dispatch(setSaving());
+
+        /* we get the user id */
+        const {uid} = getState().auth;
+
+        /* we get the active note */
+        const {active: activeNote} = getState().journal;
+
+        /* we spread all the activeNote data (title, body, date, etc...) */
+        const noteToFireStore = {...activeNote};
+
+        /* we delete the id, because if we save this id, firebase will create that id */
+        delete noteToFireStore.id;
+
+        /* we get the document to edit */
+        const docRef = doc(FirebaseDB, `${uid}/journal/notes/${activeNote.id}`)
+
+        /* we select the document we're gonna access, set the noteToFireStore as the new note, and finally we merge the data, merge makes that if there are data in the old note that doesn't exist in the new note, doesn't delete it, just add the new data.  */
+        await setDoc(docRef, noteToFireStore, {merge: true})
+
+        /* we send the id that we're using right now */
+        dispatch(updateNote(activeNote))
     }
 }
