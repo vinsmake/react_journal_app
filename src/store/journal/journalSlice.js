@@ -33,7 +33,7 @@ export const JournalSlice = createSlice({
         setActiveNote: (state, action) => {
             /* out payload is a note, we change our active data to our selected note's data */
             state.active = action.payload;
-
+            state.messageSaved = '';
         },
         /*(R) To charge and read the notes */
         setNotes: (state, action) => {
@@ -43,6 +43,7 @@ export const JournalSlice = createSlice({
         setSaving: (state) => {
             state.isSaving = true;
 
+            state.messageSaved = '';
         },
         /*(U) To ubdate note */
         /* the payload is and updated note */
@@ -55,6 +56,8 @@ export const JournalSlice = createSlice({
                 }
                 return note;
             })
+
+            state.messageSaved = `${action.payload.title} updated ;)`
         },
         /* (D) To delete notes */
         deleteNoteById: (state, action) => {
