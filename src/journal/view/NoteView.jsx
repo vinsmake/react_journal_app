@@ -6,12 +6,14 @@ import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useMemo } from "react"
 import { setActiveNote } from "../../store/journal/journalSlice"
 import { startSaveNote } from "../../store/journal/thunks"
+import Swal from "sweetalert2"
+import 'sweetalert2/dist/sweetalert2.css';
 
 export const NoteView = () => {
 
     const dispatch = useDispatch();
     "we change active to note, so we know is the active note"
-    const {active: activeNote} = useSelector(state => state.journal)
+    const {active: activeNote, messageSaved, isSaving} = useSelector(state => state.journal)
 
     const {body, title, date, onInputChange, formState} = useForm(activeNote)
 
@@ -25,6 +27,16 @@ export const NoteView = () => {
     useEffect(() => {
       dispatch(setActiveNote(formState));
     }, [formState])
+
+    /* we're creating a message when the note is saved or updated */
+    useEffect(() => {
+      if (messageSaved.length > 0) {
+        /* this is a sweetAlert2 item */
+        Swal.fire('Note updated', messageSaved, 'success')
+      }
+
+    }, [messageSaved])
+    
     
     const onSaveNote = () => {
         dispatch(startSaveNote());
@@ -38,6 +50,7 @@ export const NoteView = () => {
             </Grid>
             <Grid item>
                 <Button
+                disabled={isSaving}
                 onClick={onSaveNote}
                 color="primary"
                 sx={{ padding: 2 }}>
