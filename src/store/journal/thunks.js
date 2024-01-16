@@ -1,7 +1,8 @@
-import { collection, doc, setDoc } from "firebase/firestore/lite";
+import { collection, deleteDoc, doc, setDoc } from "firebase/firestore/lite";
 import { FirebaseDB } from "../../firebase/config";
-import { addNewEmptyNote, savingNewNote, setActiveNote, setNotes, setSaving, updateNote } from "./journalSlice";
+import { addNewEmptyNote, deleteNoteById, savingNewNote, setActiveNote, setNotes, setPhotosToActiveNote, setSaving, updateNote } from "./journalSlice";
 import { loadNotes } from "./loadNotes";
+import { fileUpload } from "./fileUpload";
 
 
 export const startNewNote = () => {
@@ -74,5 +75,44 @@ export const startSaveNote = () => {
 
         /* we send the id that we're using right now */
         dispatch(updateNote(activeNote))
+    }
+}
+
+export const startUploadingFiles = (files = []) => {
+    return async(dispatch) => {
+        /* we put our app in a charging mode */
+        dispatch(setSaving());
+
+        /* create an object that can upload multiple files */
+        const fileUploadPromises = [];
+        for (const file of files) {
+            /* no disparamos la funcion, solo creamos un arreglo de promesas, es decir, estamos haciendo un arreglo de funciones con cada archivo */
+            fileUploadPromises.push(fileUpload(file))
+        }
+
+        /* es aqui donde las estamos ejecutando y nos devuelve un array de urls */
+        const photosUrls = await Promise.all(fileUploadPromises);
+        
+        /* finally, we set the returned urls to our function that merges the new with the old photos */
+        dispatch(setPhotosToActiveNote(photosUrls));
+
+    }
+}
+
+export const startDeletingNote = () => {
+    return async(dispatch, getState) => {
+        /* first we get the userId */
+        const {uid} = getState().auth;
+        /* Second we get the active note */
+        const {active: activeNote} = getState().journal;
+
+        /* we create a url/path with that */
+        const docRef = doc(FirebaseDB, `${uid}/journal/notes/${activeNote.id}`)
+
+        /* then, we delete the document of that ref/path/url */
+        await deleteDoc(docRef);
+
+        /* finally, we clear the store (local data)*/
+        dispatch(deleteNoteById(activeNote.id))
     }
 }

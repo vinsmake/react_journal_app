@@ -1,11 +1,11 @@
-import { SaveOutlined } from "@mui/icons-material"
-import { Button, Grid, TextField, Typography } from "@mui/material"
+import { DeleteOutline, SaveOutlined, UploadOutlined } from "@mui/icons-material"
+import { Button, Grid, IconButton, TextField, Typography } from "@mui/material"
 import { ImageGallery } from "../components/ImageGallery"
 import { useForm } from "../../hooks/useForm"
 import { useDispatch, useSelector } from "react-redux"
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { setActiveNote } from "../../store/journal/journalSlice"
-import { startSaveNote } from "../../store/journal/thunks"
+import { startDeletingNote, startSaveNote, startUploadingFiles } from "../../store/journal/thunks"
 import Swal from "sweetalert2"
 import 'sweetalert2/dist/sweetalert2.css';
 
@@ -42,6 +42,19 @@ export const NoteView = () => {
         dispatch(startSaveNote());
     }
 
+    /* we upload images with this */
+    const fileInputRef = useRef();
+    const onFileInputChange = ({target}) => {
+        /* if nothing is selected, exit */
+        if(target.files === 0) return;
+
+        dispatch(startUploadingFiles(target.files))
+    }
+
+    const onDelete = () => {
+        dispatch(startDeletingNote());
+    }
+
 
     return (
         <Grid className='animate__animated animate__fadeIn' container direction='row' justifyContent='space-between' alignItems='center' sx={{ mb: 1 }}>
@@ -49,6 +62,24 @@ export const NoteView = () => {
                 <Typography fontSize={39} fontWeight='light' >{dateString}</Typography>
             </Grid>
             <Grid item>
+
+            {/* To upload filesm we're using ref so we can use input without seeing it */}
+            <input
+            ref={fileInputRef}
+            onChange={onFileInputChange}
+            type="file"
+            multiple
+            style={{display: 'none'}}
+            />
+            <IconButton
+            color="primary"
+            disabled={isSaving}
+            /* here we're simulating a click in the input behind */
+            onClick={()=>fileInputRef.current.click()}
+            >
+            <UploadOutlined/>
+            </IconButton>
+
                 <Button
                 disabled={isSaving}
                 onClick={onSaveNote}
@@ -85,8 +116,19 @@ export const NoteView = () => {
                 />
             </Grid>
 
+            <Grid container justifyContent='end'>
+                <Button
+                    onClick={ onDelete }
+                    sx={{ mt: 2 }}
+                    color="error"
+                >
+                    <DeleteOutline />
+                    Borrar
+                </Button>
+            </Grid>
+
             {/* Image gallery */}
-            <ImageGallery />
+            <ImageGallery images={activeNote.imageUrls}/>
 
         </Grid>
     )
