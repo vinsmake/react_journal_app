@@ -59,9 +59,23 @@ export const JournalSlice = createSlice({
 
             state.messageSaved = `${action.payload.title} updated ;)`
         },
+        /* (RU) We update and read the notes */
+        setPhotosToActiveNote: (state, action) => {
+            /* here we access to the active images, then spreeds the previous urls with the news, so we can gave both */
+            state.active.imageUrls = [...state.active.imageUrls, ...action.payload];
+            state.isSaving = false;
+        },
+        clearNotesLogout: (state)=>{
+            state.isSaving = false;
+            state.messageSaved = '';
+            state.notes = [];
+            state.active = null;
+        },
         /* (D) To delete notes */
         deleteNoteById: (state, action) => {
-
+            state.active = null;
+            /* we're filtering the notes to get only those who are diferenten to the payload note. usign redux toll kit, we return all the notes */
+            state.notes = state.notes.filter(note => note.id !== action.payload );
         }
     }
 })
@@ -73,5 +87,7 @@ export const {
     setSaving,
     updateNote,
     deleteNoteById,
-    savingNewNote
+    savingNewNote,
+    setPhotosToActiveNote,
+    clearNotesLogout
 } = JournalSlice.actions
